@@ -1,0 +1,12 @@
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\bin\Release\GBU_Server_DotNet.exe.config
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\bin\Release\GBU_Server_DotNet.exe
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\bin\Release\GBU_Server_DotNet.pdb
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\obj\Release\GBU_Server_DotNet.Form1.resources
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\obj\Release\GBU_Server_DotNet.Properties.Resources.resources
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\obj\Release\GBU_Server_DotNet.csproj.GenerateResource.Cache
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\obj\Release\GBU_Server_DotNet.exe
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\obj\Release\GBU_Server_DotNet.pdb
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\bin\Release\cmanprdotnet8.dll
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\bin\Release\gxdotnet8.dll
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\bin\Release\cmanprdotnet8.xml
+C:\Dev\GBU_Server_DotNet\GBU_Server_DotNet\bin\Release\gxdotnet8.xml
