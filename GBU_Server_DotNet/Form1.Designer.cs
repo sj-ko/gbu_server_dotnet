@@ -37,7 +37,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.Btn_Connect = new System.Windows.Forms.Button();
             this.Btn_Disconnect = new System.Windows.Forms.Button();
+            this.anprResultThumbnail = new System.Windows.Forms.PictureBox();
+            this.textBox_anpr = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.anprResultThumbnail)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -63,13 +66,13 @@
             // cameraListToolStripMenuItem
             // 
             this.cameraListToolStripMenuItem.Name = "cameraListToolStripMenuItem";
-            this.cameraListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cameraListToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.cameraListToolStripMenuItem.Text = "Camera List";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // helpToolStripMenuItem
@@ -95,7 +98,7 @@
             // 
             // Btn_Connect
             // 
-            this.Btn_Connect.Location = new System.Drawing.Point(520, 108);
+            this.Btn_Connect.Location = new System.Drawing.Point(12, 476);
             this.Btn_Connect.Name = "Btn_Connect";
             this.Btn_Connect.Size = new System.Drawing.Size(82, 23);
             this.Btn_Connect.TabIndex = 2;
@@ -105,7 +108,7 @@
             // 
             // Btn_Disconnect
             // 
-            this.Btn_Disconnect.Location = new System.Drawing.Point(619, 108);
+            this.Btn_Disconnect.Location = new System.Drawing.Point(100, 476);
             this.Btn_Disconnect.Name = "Btn_Disconnect";
             this.Btn_Disconnect.Size = new System.Drawing.Size(87, 23);
             this.Btn_Disconnect.TabIndex = 3;
@@ -113,11 +116,30 @@
             this.Btn_Disconnect.UseVisualStyleBackColor = true;
             this.Btn_Disconnect.Click += new System.EventHandler(this.Btn_Disconnect_Click);
             // 
+            // anprResultThumbnail
+            // 
+            this.anprResultThumbnail.Location = new System.Drawing.Point(471, 43);
+            this.anprResultThumbnail.Name = "anprResultThumbnail";
+            this.anprResultThumbnail.Size = new System.Drawing.Size(282, 155);
+            this.anprResultThumbnail.TabIndex = 4;
+            this.anprResultThumbnail.TabStop = false;
+            // 
+            // textBox_anpr
+            // 
+            this.textBox_anpr.Enabled = false;
+            this.textBox_anpr.Font = new System.Drawing.Font("Gulim", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.textBox_anpr.Location = new System.Drawing.Point(576, 204);
+            this.textBox_anpr.Name = "textBox_anpr";
+            this.textBox_anpr.Size = new System.Drawing.Size(177, 35);
+            this.textBox_anpr.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(765, 511);
+            this.Controls.Add(this.textBox_anpr);
+            this.Controls.Add(this.anprResultThumbnail);
             this.Controls.Add(this.Btn_Disconnect);
             this.Controls.Add(this.Btn_Connect);
             this.Controls.Add(this.panel1);
@@ -127,6 +149,7 @@
             this.Text = "Form1";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.anprResultThumbnail)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,6 +166,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button Btn_Connect;
         private System.Windows.Forms.Button Btn_Disconnect;
+        private System.Windows.Forms.PictureBox anprResultThumbnail;
+        private System.Windows.Forms.TextBox textBox_anpr;
     }
 }
 

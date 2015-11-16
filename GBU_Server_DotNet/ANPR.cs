@@ -20,6 +20,9 @@ namespace GBU_Server_DotNet
 
     class ANPR
     {
+        public delegate void OnANPRDetected(int channel, string plateStr);
+        public event OnANPRDetected ANPRDetected;
+
         public struct PLATE_CANDIDATE
         {
             public int id; // reserved
@@ -91,7 +94,7 @@ namespace GBU_Server_DotNet
         public void ANPRStopThread()
         {
             _isANPRThreadRun = false;
-            if (ANPRThread != null)
+            if (ANPRThread != null && ANPRThread.IsAlive)
             {
                 ANPRThread.Join();
             }
@@ -113,14 +116,14 @@ namespace GBU_Server_DotNet
 
                     _image.LoadFromMem(frame.frame, (int)GX_PIXELFORMATS.GX_RGB);
 
-                    if (getValidPlates(_image, anpr_result) > 0)
+                    if (getValidPlates(_image, ref anpr_result) > 0)
                     {
 
                         // Remove old results
                         int currentTime = Environment.TickCount;
                         for (int i = plate_candidates.Count - 1; i >= 0; i--)
                         {
-                            if (plate_candidates[i].firstfoundTime > Constants.CANDIDATE_REMOVE_TIME)
+                            if (currentTime - plate_candidates[i].firstfoundTime > Constants.CANDIDATE_REMOVE_TIME)
                             {
                                 plate_candidates.RemoveAt(i);
                             }
@@ -146,7 +149,7 @@ namespace GBU_Server_DotNet
                                     plate_candidates.RemoveAt(j);
                                     plate_candidates.Add(modified);
 
-                                    if (plate_candidates[j].foundCount == Constants.CANDIDATE_COUNT_FOR_PASS)
+                                    if (modified.foundCount == Constants.CANDIDATE_COUNT_FOR_PASS)
                                     {
                                         // Announce Event
                                         //SetLog(cropregion, plate_candidates[j].plate_string, TEXT("msg"));
@@ -154,7 +157,8 @@ namespace GBU_Server_DotNet
                                         //wchar_t eventlog[1024];
                                         //wsprintf(eventlog, TEXT("%s\t"), plate_candidates[j].plate_string);
                                         //OutputDebugString(eventlog);
-                                        Console.WriteLine("Detected candidate : " + plate_candidates[j].plate_string);
+                                        Console.WriteLine("Detected candidate : " + modified.plate_string);
+                                        ANPRDetected(1, modified.plate_string);
                                     }
                                     break;
                                 }
@@ -182,7 +186,7 @@ namespace GBU_Server_DotNet
             }
         }
 
-        public int getValidPlates(gxImage image, List<string> list)
+        public int getValidPlates(gxImage image, ref List<string> list)
         {
 	        int count = 0;
 
@@ -201,14 +205,14 @@ namespace GBU_Server_DotNet
 
                     if (isValidPlateString(resultLoop))
                     {
-                        Console.WriteLine("[OK]" + resultLoop);
+                        //Console.WriteLine("[OK]" + resultLoop);
 
                         list.Add(resultLoop);
 				        count++;
 
 			        }
 			        else {
-                        Console.WriteLine("[NG]" + resultLoop);
+                        //Console.WriteLine("[NG]" + resultLoop);
 			        }
 
 			        // Finds other plates
@@ -220,7 +224,6 @@ namespace GBU_Server_DotNet
 	        catch (gxException e) {
 		        System.Diagnostics.Debug.WriteLine("Get Plates Failed : " + e.ToString());
 	        }
-
 	        return count;
         }
 

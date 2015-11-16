@@ -47,7 +47,28 @@ namespace GBU_Server_DotNet
             timerEvent = new AutoResetEvent(true);
             timer = new System.Threading.Timer(MediaTimerCallBack, null, 1000, 100);
             anpr.ANPRRunThread();
+            anpr.ANPRDetected += anpr_ANPRDetected;
 #endif
+        }
+
+        void anpr_ANPRDetected(int channel, string plateStr)
+        {
+            Console.WriteLine("ANPR Detected channel " + channel + " Time is " + DateTime.Now);
+
+            if (this.panel1.InvokeRequired)
+            {
+                this.panel1.BeginInvoke(new Action(() =>
+                    {
+                        textBox_anpr.Text = plateStr;
+
+                        Bitmap bmp = new Bitmap(this.anprResultThumbnail.Width, this.anprResultThumbnail.Height);
+                        bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1);
+                        anprResultThumbnail.Image = bmp;
+                        //bmp.Dispose();
+                    }
+                ));
+            }
+
         }
 
         private void Btn_Disconnect_Click(object sender, EventArgs e)
