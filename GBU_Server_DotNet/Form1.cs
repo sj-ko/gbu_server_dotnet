@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define TEST_PAINTEVENT
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,7 +21,8 @@ namespace GBU_Server_DotNet
     {
         MediaPlayer player;
         ANPR anpr;
-
+        System.Threading.Timer timer;
+        AutoResetEvent timerEvent;
 
         public Form1()
         {
@@ -37,12 +40,22 @@ namespace GBU_Server_DotNet
             player.PlayStream(path, 1920, 1080);
             //player.PlayFile(path);
 
-            panel1.Paint += panel1_Paint;
+#if TEST_PAINTEVENT
+            panel1.Paint += panel1_Paint; // change to timer
+#else
+            //
+            timerEvent = new AutoResetEvent(true);
+            timer = new System.Threading.Timer(MediaTimerCallBack, null, 1000, 100);
+            anpr.ANPRRunThread();
+#endif
         }
 
         private void Btn_Disconnect_Click(object sender, EventArgs e)
         {
-            player.Stop();
+            if (player != null)
+            {
+                player.Stop();
+            }
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -51,16 +64,37 @@ namespace GBU_Server_DotNet
 
             // In order to use DrawToBitmap, the image must have an INITIAL image. 
             // Not sure why. Perhaps it uses this initial image as a mask??? Dunno.
-            using (Graphics G = Graphics.FromImage(bmp))
+            /*using (Graphics G = Graphics.FromImage(bmp))
             {
                 G.Clear(Color.Yellow);
-            }
+            }*/
 
             bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1);
             anpr.getValidPlate2(bmp, bmp.Width, bmp.Height);
 
             //bmp.Save("c:\\save.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
             bmp.Dispose();
+        }
+
+        private void MediaTimerCallBack(Object obj)
+        {
+            //Console.WriteLine("MediaTimerCallBack");
+            Bitmap bmp = new Bitmap(this.panel1.Width, this.panel1.Height);
+
+            if (this.panel1.InvokeRequired)
+            {
+                this.panel1.BeginInvoke(new Action(() =>
+                    {
+                        bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1);
+                        anpr.pushMedia(bmp, bmp.Width, bmp.Height);
+                        bmp.Dispose();
+                    }
+                ));
+            }
+            else
+            {
+                // do nothing
+            }
         }
 
     }

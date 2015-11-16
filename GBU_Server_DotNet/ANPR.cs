@@ -11,30 +11,54 @@ using cm;
 
 namespace GBU_Server_DotNet
 {
+    static class Constants
+    {
+        public const int CANDIDATE_REMOVE_TIME = 60000; // ms
+        public const int CANDIDATE_COUNT_FOR_PASS = 3;
+        public const int MAX_IMAGE_BUFFER = 50;
+    }
+
     class ANPR
     {
-        struct PLATE_CANDIDATE
+        public struct PLATE_CANDIDATE
         {
-	        int id; // reserved
-	        int foundCount;
-	        ulong firstfoundTime;
-	        string plate_string;
+            public int id; // reserved
+            public int foundCount;
+            public int firstfoundTime;
+            public string plate_string;
         }
 
+        public struct GBUVideoFrame
+        {
+            public Byte[] frame;
+            public int camindex;
+        };
+
         List<PLATE_CANDIDATE> _list;
+        GBUVideoFrame[] _imageBuffer = new GBUVideoFrame[Constants.MAX_IMAGE_BUFFER];
+        int _imageBufferCount = 0;
+        int _imageBufferEmptyIndex = 0;
 
         // Creates the ANPR object
         private cmAnpr _anpr = new cmAnpr("default");
         // Creates the image object
         private gxImage _image = new gxImage("default");
 
+        Thread ANPRThread;
         // Volatile is used as hint to the compiler that this data
         // member will be accessed by multiple threads.
-        private volatile bool _isANPRThreadRun;
+        private volatile bool _isANPRThreadRun = false;
 
         public ANPR()
         {
             initANPR(_anpr);
+
+            ANPRThread = new Thread(ANPRThreadFunction);
+        }
+
+        ~ANPR()
+        {
+            ANPRStopThread();
         }
 
         private void initANPR(cmAnpr anpr)
@@ -55,12 +79,110 @@ namespace GBU_Server_DotNet
             anpr.SetProperty("slant_max", "10"); // Default 27
         }
 
-        public void ANPRThreadFunction()
+        public void ANPRRunThread()
         {
-            
+            _isANPRThreadRun = true;
+            if (ANPRThread != null)
+            {
+                ANPRThread.Start();
+            }
         }
 
-        public int getValidPlates(cmAnpr anpr, gxImage image, List<string> list)
+        public void ANPRStopThread()
+        {
+            _isANPRThreadRun = false;
+            if (ANPRThread != null)
+            {
+                ANPRThread.Join();
+            }
+        }
+
+        public void ANPRThreadFunction()
+        {
+            List<string> anpr_result = new List<string>();
+            List<PLATE_CANDIDATE> plate_candidates = new List<PLATE_CANDIDATE>();
+            GBUVideoFrame frame = new GBUVideoFrame();
+            gxImage targetImage;
+
+            while (_isANPRThreadRun)
+            {
+
+                if (popMedia(ref frame))
+                {
+                    anpr_result.Clear();
+
+                    _image.LoadFromMem(frame.frame, (int)GX_PIXELFORMATS.GX_RGB);
+
+                    if (getValidPlates(_image, anpr_result) > 0)
+                    {
+
+                        // Remove old results
+                        int currentTime = Environment.TickCount;
+                        for (int i = plate_candidates.Count - 1; i >= 0; i--)
+                        {
+                            if (plate_candidates[i].firstfoundTime > Constants.CANDIDATE_REMOVE_TIME)
+                            {
+                                plate_candidates.RemoveAt(i);
+                            }
+                        }
+
+                        // Check duplicate
+                        for (int i = 0; i < anpr_result.Count; i++)
+                        {
+                            bool isNew = true;
+
+                            for (int j = 0; j < plate_candidates.Count; j++)
+                            {
+                                //if (_tcsnccmp(anpr_result[i].c_str(), plate_candidates[j].plate_string, _tcslen(anpr_result[i].c_str())) == 0)  {
+                                if (anpr_result[i].Equals(plate_candidates[j].plate_string))
+                                {
+                                    isNew = false;
+
+                                    PLATE_CANDIDATE modified;
+                                    modified.firstfoundTime = plate_candidates[j].firstfoundTime;
+                                    modified.foundCount = plate_candidates[j].foundCount + 1;
+                                    modified.id = plate_candidates[j].id;
+                                    modified.plate_string = plate_candidates[j].plate_string;
+                                    plate_candidates.RemoveAt(j);
+                                    plate_candidates.Add(modified);
+
+                                    if (plate_candidates[j].foundCount == Constants.CANDIDATE_COUNT_FOR_PASS)
+                                    {
+                                        // Announce Event
+                                        //SetLog(cropregion, plate_candidates[j].plate_string, TEXT("msg"));
+
+                                        //wchar_t eventlog[1024];
+                                        //wsprintf(eventlog, TEXT("%s\t"), plate_candidates[j].plate_string);
+                                        //OutputDebugString(eventlog);
+                                        Console.WriteLine("Detected candidate : " + plate_candidates[j].plate_string);
+                                    }
+                                    break;
+                                }
+                            }
+
+                            if (isNew)
+                            {
+                                currentTime = Environment.TickCount;
+                                PLATE_CANDIDATE newItem;
+                                newItem.firstfoundTime = currentTime;
+                                newItem.foundCount = 1;
+                                newItem.plate_string = anpr_result[i];
+                                newItem.id = 0;
+
+                                plate_candidates.Add(newItem);
+                            }
+                        }
+                    }
+
+
+                }
+
+                // end of thread cycle
+                Thread.Sleep(1);
+            }
+        }
+
+        public int getValidPlates(gxImage image, List<string> list)
         {
 	        int count = 0;
 
@@ -68,29 +190,29 @@ namespace GBU_Server_DotNet
 
 		        // Finds the first plate and displays it
 		        //QueryPerformanceCounter(&counter_before);
-		        bool found = anpr.FindFirst(image);
+		        bool found = _anpr.FindFirst(image);
 		        //QueryPerformanceCounter(&counter_after);
 		        //double anprTime = (double)(counter_after.QuadPart - counter_before.QuadPart) / freq.QuadPart;
 
                 list.Clear();
 
 		        while (found) {
-			        string resultLoop = anpr.GetText();
+			        string resultLoop = _anpr.GetText();
 
                     if (isValidPlateString(resultLoop))
                     {
-				        //printf( "[OK]%s\t", result );
+                        Console.WriteLine("[OK]" + resultLoop);
 
                         list.Add(resultLoop);
 				        count++;
 
 			        }
 			        else {
-				        //printf( "[NG]%s\t", result );
+                        Console.WriteLine("[NG]" + resultLoop);
 			        }
 
 			        // Finds other plates
-			        found = anpr.FindNext();
+			        found = _anpr.FindNext();
 		        }
 		        //printf("\n");
 		        //printf("\nMemLoad:%lf\tAnpr:%lf\n", loadTime, anprTime);
@@ -107,6 +229,8 @@ namespace GBU_Server_DotNet
         {
             byte[] anprByteArray = imageToByteArray(anprImage);
 
+            Console.WriteLine("image size " + anprByteArray.Length);
+
             bool ret = _image.LoadFromMem(anprByteArray, (int)GX_PIXELFORMATS.GX_RGB);
 
             Console.WriteLine("Load ANPR Image " + ret);
@@ -120,6 +244,47 @@ namespace GBU_Server_DotNet
             else
             {
                 Console.WriteLine("No plate found");
+            }
+        }
+
+        public void pushMedia(Bitmap anprImage, int width, int height)
+        {
+            if (_imageBufferCount >= Constants.MAX_IMAGE_BUFFER)
+            {
+                Console.WriteLine("Media Buffer Overflow!");
+                return;
+            }
+            
+            byte[] anprByteArray = imageToByteArray(anprImage);
+            _imageBuffer[_imageBufferEmptyIndex++].frame = anprByteArray;
+            //Console.WriteLine("image size " + anprByteArray.Length);
+
+            if (_imageBufferEmptyIndex >= Constants.MAX_IMAGE_BUFFER)
+            {
+                _imageBufferEmptyIndex = 0;
+            }
+            _imageBufferCount++;
+
+        }
+
+        public bool popMedia(ref GBUVideoFrame frame)
+        {
+            if (_imageBufferCount > 0)
+            {
+                int frontindex = _imageBufferEmptyIndex - _imageBufferCount;
+                if (frontindex < 0)
+                {
+                    frontindex += Constants.MAX_IMAGE_BUFFER;
+                }
+                frame.frame = _imageBuffer[frontindex].frame;
+
+                _imageBufferCount--;
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
