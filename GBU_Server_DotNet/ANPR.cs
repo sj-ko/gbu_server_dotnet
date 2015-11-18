@@ -15,7 +15,7 @@ namespace GBU_Server_DotNet
     {
         public const int CANDIDATE_REMOVE_TIME = 60000; // ms
         public const int CANDIDATE_COUNT_FOR_PASS = 3;
-        public const int MAX_IMAGE_BUFFER = 50;
+        public const int MAX_IMAGE_BUFFER = 5;
     }
 
     class ANPR
@@ -37,10 +37,11 @@ namespace GBU_Server_DotNet
             public int camindex;
         };
 
-        List<PLATE_CANDIDATE> _list;
-        GBUVideoFrame[] _imageBuffer = new GBUVideoFrame[Constants.MAX_IMAGE_BUFFER];
-        int _imageBufferCount = 0;
-        int _imageBufferEmptyIndex = 0;
+        private int _camID;
+        private List<PLATE_CANDIDATE> _list;
+        private GBUVideoFrame[] _imageBuffer = new GBUVideoFrame[Constants.MAX_IMAGE_BUFFER];
+        private int _imageBufferCount = 0;
+        private int _imageBufferEmptyIndex = 0;
 
         // Creates the ANPR object
         private cmAnpr _anpr = new cmAnpr("default");
@@ -51,6 +52,19 @@ namespace GBU_Server_DotNet
         // Volatile is used as hint to the compiler that this data
         // member will be accessed by multiple threads.
         private volatile bool _isANPRThreadRun = false;
+
+        public int camID
+        {
+            get
+            {
+                return _camID;
+            }
+
+            set
+            {
+                _camID = value;
+            }
+        }
 
         public ANPR()
         {
@@ -67,19 +81,19 @@ namespace GBU_Server_DotNet
         private void initANPR(cmAnpr anpr)
         {
             anpr.SetProperty("anprname", "cmanpr-7.2.7.68:kor");
-            anpr.SetProperty("size_min", "8"); // Default 6
-            anpr.SetProperty("size_max", "40"); // Default 93
+            anpr.SetProperty("size_min", "6"); //"8"); // Default 6
+            anpr.SetProperty("size_max", "93"); //"40"); // Default 93
 
-            anpr.SetProperty("nchar_min", "7"); // Default 8
+            anpr.SetProperty("nchar_min", "8"); // "7"); // Default 8
             anpr.SetProperty("nchar_max", "9"); // Default 9
 
-            anpr.SetProperty("slope", "-5"); // Default -22
-            anpr.SetProperty("slope_min", "-20"); // Default -22
-            anpr.SetProperty("slope_max", "10"); // Default 34
+            anpr.SetProperty("slope", "-22"); // "-5"); // Default -22
+            anpr.SetProperty("slope_min", "-22"); //-20"); // Default -22
+            anpr.SetProperty("slope_max", "34"); // "10"); // Default 34
 
-            anpr.SetProperty("slant", "0"); // Default 10
-            anpr.SetProperty("slant_min", "-10"); // Default -55
-            anpr.SetProperty("slant_max", "10"); // Default 27
+            anpr.SetProperty("slant", "10"); // "0"); // Default 10
+            anpr.SetProperty("slant_min", "-55"); // "-10"); // Default -55
+            anpr.SetProperty("slant_max", "27"); // "10"); // Default 27
         }
 
         public void ANPRRunThread()
@@ -114,7 +128,7 @@ namespace GBU_Server_DotNet
                 {
                     anpr_result.Clear();
 
-                    _image.LoadFromMem(frame.frame, (int)GX_PIXELFORMATS.GX_RGB);
+                    _image.LoadFromMem(frame.frame, (int)GX_PIXELFORMATS.GX_YUV422);
 
                     if (getValidPlates(_image, ref anpr_result) > 0)
                     {
@@ -158,7 +172,7 @@ namespace GBU_Server_DotNet
                                         //wsprintf(eventlog, TEXT("%s\t"), plate_candidates[j].plate_string);
                                         //OutputDebugString(eventlog);
                                         Console.WriteLine("Detected candidate : " + modified.plate_string);
-                                        ANPRDetected(1, modified.plate_string);
+                                        ANPRDetected(_camID, modified.plate_string);
                                     }
                                     break;
                                 }
@@ -259,7 +273,12 @@ namespace GBU_Server_DotNet
             }
             
             byte[] anprByteArray = imageToByteArray(anprImage);
-            _imageBuffer[_imageBufferEmptyIndex++].frame = anprByteArray;
+            int index = _imageBufferEmptyIndex;
+
+            _imageBuffer[index].frame = anprByteArray;
+            _imageBuffer[index].camindex = _camID;
+
+            _imageBufferEmptyIndex++;
             //Console.WriteLine("image size " + anprByteArray.Length);
 
             if (_imageBufferEmptyIndex >= Constants.MAX_IMAGE_BUFFER)
@@ -272,6 +291,7 @@ namespace GBU_Server_DotNet
 
         public bool popMedia(ref GBUVideoFrame frame)
         {
+            Console.WriteLine("ImageBuffer" + _imageBufferCount);
             if (_imageBufferCount > 0)
             {
                 int frontindex = _imageBufferEmptyIndex - _imageBufferCount;
@@ -280,6 +300,7 @@ namespace GBU_Server_DotNet
                     frontindex += Constants.MAX_IMAGE_BUFFER;
                 }
                 frame.frame = _imageBuffer[frontindex].frame;
+                frame.camindex = _imageBuffer[frontindex].camindex;
 
                 _imageBufferCount--;
 
