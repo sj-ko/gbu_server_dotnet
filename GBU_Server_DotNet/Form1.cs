@@ -200,5 +200,16 @@ namespace GBU_Server_DotNet
 
         }
 
+        private void textBox_search_TextChanged(object sender, EventArgs e)
+        {
+            // Call FindItemWithText with the contents of the textbox.
+            ListViewItem foundItem = listView1.FindItemWithText(textBox_search.Text, true, 0, true);
+            if (foundItem != null)
+            {
+                listView1.TopItem = foundItem;
+                Console.WriteLine("found " + foundItem.Index);
+            }
+        }
+
     }
 }

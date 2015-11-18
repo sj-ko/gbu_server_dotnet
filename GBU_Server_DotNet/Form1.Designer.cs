@@ -41,6 +41,8 @@
             this.anprResultThumbnail = new System.Windows.Forms.PictureBox();
             this.textBox_anpr = new System.Windows.Forms.TextBox();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.textBox_search = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.anprResultThumbnail)).BeginInit();
             this.SuspendLayout();
@@ -154,11 +156,30 @@
             this.listView1.TabIndex = 6;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
+            // textBox_search
+            // 
+            this.textBox_search.Location = new System.Drawing.Point(665, 371);
+            this.textBox_search.Name = "textBox_search";
+            this.textBox_search.Size = new System.Drawing.Size(100, 21);
+            this.textBox_search.TabIndex = 7;
+            this.textBox_search.TextChanged += new System.EventHandler(this.textBox_search_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(614, 374);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(45, 12);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Search";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(793, 540);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBox_search);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.textBox_anpr);
             this.Controls.Add(this.anprResultThumbnail);
@@ -193,6 +214,8 @@
         private System.Windows.Forms.TextBox textBox_anpr;
         private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
         private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.TextBox textBox_search;
+        private System.Windows.Forms.Label label1;
     }
 }
 
