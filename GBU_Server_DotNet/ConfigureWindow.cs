@@ -19,14 +19,14 @@ namespace GBU_Server_DotNet
 
         public void Init()
         {
-            Form1 form = (Form1)this.Owner;
+            MainForm form = (MainForm)this.Owner;
             Configure_textbox_camID.Text = Convert.ToString(form.camera.camID, 10);
             Configure_textbox_rtspurl.Text = form.camera.camURL;
         }
 
         private void Configure_button_OK_Click(object sender, EventArgs e)
         {
-            Form1 form = (Form1)this.Owner;
+            MainForm form = (MainForm)this.Owner;
             form.camera.camID = Convert.ToInt32(Configure_textbox_camID.Text, 10);
             form.camera.camURL = Configure_textbox_rtspurl.Text;
             this.Close();

@@ -17,7 +17,7 @@ using cm;
 
 namespace GBU_Server_DotNet
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         public Camera camera;
         private MediaPlayer player;
@@ -25,12 +25,12 @@ namespace GBU_Server_DotNet
         private System.Threading.Timer timer;
         private AutoResetEvent timerEvent;
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
 
-        ~Form1()
+        ~MainForm()
         {
             Stop();
         }
