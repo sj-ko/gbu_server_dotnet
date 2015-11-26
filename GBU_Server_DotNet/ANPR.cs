@@ -15,13 +15,16 @@ namespace GBU_Server_DotNet
     {
         public const int CANDIDATE_REMOVE_TIME = 60000; // ms
         public const int CANDIDATE_COUNT_FOR_PASS = 3;
-        public const int MAX_IMAGE_BUFFER = 5;
+        public const int MAX_IMAGE_BUFFER = 30;
     }
 
     class ANPR
     {
-        public delegate void OnANPRDetected(int channel, string plateStr);
+        public delegate void OnANPRDetected(int channel, string plateStr, byte[] frame);
         public event OnANPRDetected ANPRDetected;
+
+        public string[] KOREA_LOCALAREA_LIST = {"서울","인천","세종","대전","대구","부산","광주","울산",
+                                            "경기","강원","충북","충남","경북","경남","전북","전남","제주"};
 
         public struct PLATE_CANDIDATE
         {
@@ -38,7 +41,6 @@ namespace GBU_Server_DotNet
         };
 
         private int _camID;
-        private List<PLATE_CANDIDATE> _list;
         private GBUVideoFrame[] _imageBuffer = new GBUVideoFrame[Constants.MAX_IMAGE_BUFFER];
         private int _imageBufferCount = 0;
         private int _imageBufferEmptyIndex = 0;
@@ -172,7 +174,7 @@ namespace GBU_Server_DotNet
                                         //wsprintf(eventlog, TEXT("%s\t"), plate_candidates[j].plate_string);
                                         //OutputDebugString(eventlog);
                                         Console.WriteLine("Detected candidate : " + modified.plate_string);
-                                        ANPRDetected(_camID, modified.plate_string);
+                                        ANPRDetected(_camID, modified.plate_string, frame.frame);
                                     }
                                     break;
                                 }
@@ -338,7 +340,7 @@ namespace GBU_Server_DotNet
         private byte[] imageToByteArray(Image imageIn)
         {
             MemoryStream ms = new MemoryStream();
-            imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+            imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
             return ms.ToArray();
         }
 

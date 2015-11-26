@@ -25,6 +25,18 @@ namespace GBU_Server_DotNet
         private System.Threading.Timer timer;
         private AutoResetEvent timerEvent;
 
+        public struct PLATE_FOUND
+        {
+            public int id;
+            public int cam;
+            public DateTime dateTime;
+            public string plateStr;
+            public Image snapshot;
+        };
+
+        private List<PLATE_FOUND> _plateList = new List<PLATE_FOUND>();
+        private int _plateListIdx = 0;
+
         public MainForm()
         {
             InitializeComponent();
@@ -41,9 +53,9 @@ namespace GBU_Server_DotNet
             listView1.FullRowSelect = true;
             listView1.GridLines = true;
 
-            listView1.Columns.Add("Camera ID", 100, HorizontalAlignment.Left);
-            listView1.Columns.Add("Data & Time", 200, HorizontalAlignment.Left);
-            listView1.Columns.Add("Plate String", 100, HorizontalAlignment.Left);
+            listView1.Columns.Add("Camera ID", 90, HorizontalAlignment.Left);
+            listView1.Columns.Add("Data & Time", 140, HorizontalAlignment.Left);
+            listView1.Columns.Add("Plate String", 80, HorizontalAlignment.Left);
 
             InitCamera();
             UpdateFormUIValue();
@@ -67,29 +79,10 @@ namespace GBU_Server_DotNet
 
         private void Btn_Connect_Click(object sender, EventArgs e)
         {
-            anpr = new ANPR();
-            anpr.camID = camera.camID;
-
-            string path = camera.camURL;
-            //string path = "C:\\업무문서\\ppt\\MicroModule 아키텍처.wmv";
-            player = new MediaPlayer(".\\plugins");
-           
-            player.SetRenderWindow((int)this.panel1.Handle);
-            player.PlayStream(path, 1920, 1080);
-            //player.PlayFile(path);
-
-#if TEST_PAINTEVENT
-            panel1.Paint += panel1_Paint; // change to timer
-#else
-            //
-            timerEvent = new AutoResetEvent(true);
-            timer = new System.Threading.Timer(MediaTimerCallBack, null, 1000, 100);
-            anpr.ANPRRunThread();
-            anpr.ANPRDetected += anpr_ANPRDetected;
-#endif
+            
         }
 
-        private void anpr_ANPRDetected(int channel, string plateStr)
+        private void anpr_ANPRDetected(int channel, string plateStr, byte[] frame)
         {
             Console.WriteLine("ANPR Detected channel " + channel + " Time is " + DateTime.Now);
 
@@ -103,10 +96,19 @@ namespace GBU_Server_DotNet
 
                         textBox_anpr.Text = plateStr;
 
-                        Bitmap bmp = new Bitmap(this.anprResultThumbnail.Width, this.anprResultThumbnail.Height);
-                        bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1);
-                        anprResultThumbnail.Image = bmp;
-                        //bmp.Dispose();
+                        MemoryStream ms = new MemoryStream(frame);
+                        Image returnImage = Image.FromStream(ms);
+                        anprResultThumbnail.Image = returnImage;
+
+                        PLATE_FOUND plate = new PLATE_FOUND();
+                        plate.cam = camera.camID;
+                        plate.dateTime = DateTime.Now;
+                        plate.id = _plateListIdx;
+                        plate.plateStr = plateStr;
+                        plate.snapshot = returnImage;
+
+                        _plateList.Add(plate);
+                        _plateListIdx++;
                     }
                 ));
             }
@@ -115,7 +117,7 @@ namespace GBU_Server_DotNet
 
         private void Btn_Disconnect_Click(object sender, EventArgs e)
         {
-            Stop();
+            
         }
 
         private void Stop()
@@ -132,8 +134,12 @@ namespace GBU_Server_DotNet
             anpr.ANPRStopThread();
             anpr.ANPRDetected -= anpr_ANPRDetected;
             anpr = null;
+
+            _plateListIdx = 0;
+            _plateList.Clear();
         }
 
+#if TEST_PAINTEVENT
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
             Bitmap bmp = new Bitmap(this.panel1.Width, this.panel1.Height);
@@ -151,6 +157,7 @@ namespace GBU_Server_DotNet
             //bmp.Save("c:\\save.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
             bmp.Dispose();
         }
+#endif
 
         private void MediaTimerCallBack(Object obj)
         {
@@ -164,6 +171,7 @@ namespace GBU_Server_DotNet
                         if (anpr != null)
                         {
                             bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1);
+                            //bmp = ResizeBitmap(bmp, 480, 270); // size of anpr input image
                             anpr.pushMedia(bmp, bmp.Width, bmp.Height);
                             bmp.Dispose();
                         }
@@ -174,6 +182,14 @@ namespace GBU_Server_DotNet
             {
                 // do nothing
             }
+        }
+
+        private static Bitmap ResizeBitmap(Bitmap sourceBMP, int width, int height)
+        {
+            Bitmap result = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(result))
+                g.DrawImage(sourceBMP, 0, 0, width, height);
+            return result;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -195,20 +211,59 @@ namespace GBU_Server_DotNet
                 + "\n\n" + "(C) 2015 GBU Datalinks Co. Ltd.");
         }
 
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        private void searchPlateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SearchWindow searchWindow = new SearchWindow();
+            searchWindow.Owner = this;
+            searchWindow.Init();
+            searchWindow.Show();
+        }
+
+        private void anprResultThumbnail_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void textBox_search_TextChanged(object sender, EventArgs e)
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Call FindItemWithText with the contents of the textbox.
-            ListViewItem foundItem = listView1.FindItemWithText(textBox_search.Text, true, 0, true);
-            if (foundItem != null)
-            {
-                listView1.TopItem = foundItem;
-                Console.WriteLine("found " + foundItem.Index);
-            }
+            anpr = new ANPR();
+            anpr.camID = camera.camID;
+
+            //string path = camera.camURL;
+            string path = @"C:\VideoTest\LPR\SNZ-5200_192.168.0.44_4520-Cam01_H.264_1280X1024_fps_30_20150623_045652.avi";
+            player = new MediaPlayer(".\\plugins");
+
+            player.SetRenderWindow((int)this.panel1.Handle);
+            //player.PlayStream(path, 1920, 1080);
+            player.PlayFile(path);
+
+#if TEST_PAINTEVENT
+            panel1.Paint += panel1_Paint; // change to timer
+#else
+            //
+            timerEvent = new AutoResetEvent(true);
+            timer = new System.Threading.Timer(MediaTimerCallBack, null, 1000, 400);
+            anpr.ANPRRunThread();
+            anpr.ANPRDetected += anpr_ANPRDetected;
+#endif
+
+            connectToolStripMenuItem.Enabled = false;
+            disconnectToolStripMenuItem.Enabled = true;
+        }
+
+        private void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Stop();
+
+            connectToolStripMenuItem.Enabled = true;
+            disconnectToolStripMenuItem.Enabled = false;
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = listView1.FocusedItem.Index;
+            textBox_anpr.Text = listView1.Items[index].SubItems[2].Text;
+            anprResultThumbnail.Image = _plateList[index].snapshot;
         }
 
     }

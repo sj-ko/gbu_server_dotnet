@@ -31,18 +31,18 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cameraListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchPlateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.Btn_Connect = new System.Windows.Forms.Button();
-            this.Btn_Disconnect = new System.Windows.Forms.Button();
             this.anprResultThumbnail = new System.Windows.Forms.PictureBox();
             this.textBox_anpr = new System.Windows.Forms.TextBox();
             this.listView1 = new System.Windows.Forms.ListView();
-            this.textBox_search = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.anprResultThumbnail)).BeginInit();
             this.SuspendLayout();
@@ -51,10 +51,11 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.searchToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(793, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1904, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -70,9 +71,27 @@
             // 
             // cameraListToolStripMenuItem
             // 
+            this.cameraListToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.connectToolStripMenuItem,
+            this.disconnectToolStripMenuItem});
             this.cameraListToolStripMenuItem.Name = "cameraListToolStripMenuItem";
             this.cameraListToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.cameraListToolStripMenuItem.Text = "Camera List";
+            // 
+            // connectToolStripMenuItem
+            // 
+            this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.connectToolStripMenuItem.Text = "Connect";
+            this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
+            // 
+            // disconnectToolStripMenuItem
+            // 
+            this.disconnectToolStripMenuItem.Enabled = false;
+            this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.disconnectToolStripMenuItem.Text = "Disconnect";
+            this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
             // 
             // configureToolStripMenuItem
             // 
@@ -87,6 +106,21 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // searchToolStripMenuItem
+            // 
+            this.searchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.searchPlateToolStripMenuItem});
+            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.searchToolStripMenuItem.Text = "Search";
+            // 
+            // searchPlateToolStripMenuItem
+            // 
+            this.searchPlateToolStripMenuItem.Name = "searchPlateToolStripMenuItem";
+            this.searchPlateToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.searchPlateToolStripMenuItem.Text = "Search Plate";
+            this.searchPlateToolStripMenuItem.Click += new System.EventHandler(this.searchPlateToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -105,91 +139,54 @@
             // 
             // panel1
             // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Location = new System.Drawing.Point(12, 43);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(432, 295);
+            this.panel1.Size = new System.Drawing.Size(1280, 720);
             this.panel1.TabIndex = 1;
-            // 
-            // Btn_Connect
-            // 
-            this.Btn_Connect.Location = new System.Drawing.Point(12, 344);
-            this.Btn_Connect.Name = "Btn_Connect";
-            this.Btn_Connect.Size = new System.Drawing.Size(82, 23);
-            this.Btn_Connect.TabIndex = 2;
-            this.Btn_Connect.Text = "Connect";
-            this.Btn_Connect.UseVisualStyleBackColor = true;
-            this.Btn_Connect.Click += new System.EventHandler(this.Btn_Connect_Click);
-            // 
-            // Btn_Disconnect
-            // 
-            this.Btn_Disconnect.Location = new System.Drawing.Point(111, 344);
-            this.Btn_Disconnect.Name = "Btn_Disconnect";
-            this.Btn_Disconnect.Size = new System.Drawing.Size(87, 23);
-            this.Btn_Disconnect.TabIndex = 3;
-            this.Btn_Disconnect.Text = "Disconnect";
-            this.Btn_Disconnect.UseVisualStyleBackColor = true;
-            this.Btn_Disconnect.Click += new System.EventHandler(this.Btn_Disconnect_Click);
             // 
             // anprResultThumbnail
             // 
-            this.anprResultThumbnail.Location = new System.Drawing.Point(471, 43);
+            this.anprResultThumbnail.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.anprResultThumbnail.Location = new System.Drawing.Point(1310, 43);
             this.anprResultThumbnail.Name = "anprResultThumbnail";
-            this.anprResultThumbnail.Size = new System.Drawing.Size(294, 234);
+            this.anprResultThumbnail.Size = new System.Drawing.Size(582, 321);
             this.anprResultThumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.anprResultThumbnail.TabIndex = 4;
             this.anprResultThumbnail.TabStop = false;
+            this.anprResultThumbnail.Click += new System.EventHandler(this.anprResultThumbnail_Click);
             // 
             // textBox_anpr
             // 
             this.textBox_anpr.Enabled = false;
             this.textBox_anpr.Font = new System.Drawing.Font("Gulim", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.textBox_anpr.Location = new System.Drawing.Point(588, 283);
+            this.textBox_anpr.Location = new System.Drawing.Point(1310, 370);
             this.textBox_anpr.Name = "textBox_anpr";
             this.textBox_anpr.Size = new System.Drawing.Size(177, 35);
             this.textBox_anpr.TabIndex = 5;
             // 
             // listView1
             // 
-            this.listView1.Location = new System.Drawing.Point(12, 398);
+            this.listView1.Location = new System.Drawing.Point(1310, 479);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(753, 130);
+            this.listView1.Size = new System.Drawing.Size(582, 284);
             this.listView1.TabIndex = 6;
             this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
-            // textBox_search
-            // 
-            this.textBox_search.Location = new System.Drawing.Point(665, 371);
-            this.textBox_search.Name = "textBox_search";
-            this.textBox_search.Size = new System.Drawing.Size(100, 21);
-            this.textBox_search.TabIndex = 7;
-            this.textBox_search.TextChanged += new System.EventHandler(this.textBox_search_TextChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(614, 374);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 12);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Search";
-            // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(793, 540);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox_search);
+            this.ClientSize = new System.Drawing.Size(1904, 778);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.textBox_anpr);
             this.Controls.Add(this.anprResultThumbnail);
-            this.Controls.Add(this.Btn_Disconnect);
-            this.Controls.Add(this.Btn_Connect);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
-            this.Text = "Gaenari ANPR";
+            this.Name = "MainForm";
+            this.Text = "GBU ANPR Service";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -208,14 +205,14 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button Btn_Connect;
-        private System.Windows.Forms.Button Btn_Disconnect;
         private System.Windows.Forms.PictureBox anprResultThumbnail;
         private System.Windows.Forms.TextBox textBox_anpr;
         private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.TextBox textBox_search;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem searchPlateToolStripMenuItem;
+        public System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
     }
 }
 

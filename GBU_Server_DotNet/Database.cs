@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Sql;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 
 namespace GBU_Server_DotNet
 {
     class Database
     {
+        string strConn = @"Data Source=C:\testdb.db";
+
         public struct CameraItem
         {
             public int no;
