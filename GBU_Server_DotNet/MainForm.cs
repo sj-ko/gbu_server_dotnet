@@ -37,6 +37,8 @@ namespace GBU_Server_DotNet
         private List<PLATE_FOUND> _plateList = new List<PLATE_FOUND>();
         private int _plateListIdx = 0;
 
+        private Database dbManager = new Database();
+
         public MainForm()
         {
             InitializeComponent();
@@ -69,7 +71,7 @@ namespace GBU_Server_DotNet
 
         private void UpdateFormUIValue()
         {
-            this.Text = "Gaenari ANPR" + " - Camera " + camera.camID;
+            this.Text = "GBU ANPR Service" + " - Camera " + camera.camID;
         }
 
         private void camera_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -109,6 +111,9 @@ namespace GBU_Server_DotNet
 
                         _plateList.Add(plate);
                         _plateListIdx++;
+
+                        // id is auto-increment value in DB
+                        dbManager.InsertPlate(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot);
                     }
                 ));
             }
@@ -170,8 +175,8 @@ namespace GBU_Server_DotNet
                     {
                         if (anpr != null)
                         {
-                            bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1);
-                            //bmp = ResizeBitmap(bmp, 480, 270); // size of anpr input image
+                            bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1, 0, 270, 800, 450); // 108, 110, 800, 450);
+                            bmp = ResizeBitmap(bmp, 480, 270); // size of anpr input image
                             anpr.pushMedia(bmp, bmp.Width, bmp.Height);
                             bmp.Dispose();
                         }
@@ -230,7 +235,7 @@ namespace GBU_Server_DotNet
             anpr.camID = camera.camID;
 
             //string path = camera.camURL;
-            string path = @"C:\VideoTest\LPR\SNZ-5200_192.168.0.44_4520-Cam01_H.264_1280X1024_fps_30_20150623_045652.avi";
+            string path = @"C:\NetDEVSDK\Record\netDev_07.ts";
             player = new MediaPlayer(".\\plugins");
 
             player.SetRenderWindow((int)this.panel1.Handle);
@@ -242,7 +247,7 @@ namespace GBU_Server_DotNet
 #else
             //
             timerEvent = new AutoResetEvent(true);
-            timer = new System.Threading.Timer(MediaTimerCallBack, null, 1000, 400);
+            timer = new System.Threading.Timer(MediaTimerCallBack, null, 100, 100);
             anpr.ANPRRunThread();
             anpr.ANPRDetected += anpr_ANPRDetected;
 #endif

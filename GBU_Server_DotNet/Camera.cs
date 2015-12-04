@@ -62,5 +62,17 @@ namespace GBU_Server_DotNet
             _camURL = "rtsp://admin:admin@192.168.0.62/media/video1";
         }
 
+        public Camera(int id)
+        {
+            _camID = id;
+            _camURL = "rtsp://admin:admin@192.168.0.62/media/video1";
+        }
+
+        public Camera(int id, string url)
+        {
+            _camID = id;
+            _camURL = url;
+        }
+
     }
 }

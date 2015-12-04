@@ -12,6 +12,17 @@ namespace GBU_Server_DotNet
 {
     public partial class SearchWindow : Form
     {
+        private Database dbManager = new Database();
+
+        public struct PLATE_FOUND
+        {
+            public int id;
+            public int cam;
+            public DateTime dateTime;
+            public string plateStr;
+            public Image snapshot;
+        };
+
         public SearchWindow()
         {
             InitializeComponent();
@@ -37,27 +48,18 @@ namespace GBU_Server_DotNet
 
         private void Search_button_search_Click(object sender, EventArgs e)
         {
-            MainForm form = (MainForm)this.Owner;
+            DataTable result = new DataTable();
 
-            Search_listView1.BeginUpdate();
+            Search_listView1.Items.Clear();
+            dbManager.SearchPlate(search_textBox_search.Text, ref result);
 
-
-            if (search_textBox_search.Text != "")
+            foreach (DataRow dr in result.Rows)
             {
-                for (int i = form.listView1.Items.Count - 1; i >= 0; i--)
-                {
-                    var item = form.listView1.Items[i];
-                    if (item.SubItems[2].Text.Contains(search_textBox_search.Text))
-                    {
-                        //item.BackColor = SystemColors.Highlight;
-                        //item.ForeColor = SystemColors.HighlightText;
-                        Search_listView1.Items.Add(item);
-                    }
-                }
-
+                string[] itemStr = { Convert.ToString(dr["camId"]), Convert.ToDateTime(dr["dateTime"]).ToString(), Convert.ToString(dr["plate"]) };
+                ListViewItem item = new ListViewItem(itemStr);
+                Search_listView1.Items.Add(item);
             }
 
-            Search_listView1.EndUpdate();
         }
 
         private void search_textBox_search_TextChanged(object sender, EventArgs e)

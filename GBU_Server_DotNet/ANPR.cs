@@ -96,6 +96,8 @@ namespace GBU_Server_DotNet
             anpr.SetProperty("slant", "10"); // "0"); // Default 10
             anpr.SetProperty("slant_min", "-55"); // "-10"); // Default -55
             anpr.SetProperty("slant_max", "27"); // "10"); // Default 27
+
+            anpr.SetProperty("timeout", "100");
         }
 
         public void ANPRRunThread()
@@ -130,7 +132,7 @@ namespace GBU_Server_DotNet
                 {
                     anpr_result.Clear();
 
-                    _image.LoadFromMem(frame.frame, (int)GX_PIXELFORMATS.GX_YUV422);
+                    _image.LoadFromMem(frame.frame, (int)GX_PIXELFORMATS.GX_GRAY);
 
                     if (getValidPlates(_image, ref anpr_result) > 0)
                     {
@@ -316,7 +318,7 @@ namespace GBU_Server_DotNet
 
         bool isValidPlateString(string plateValue)
         {
-	        if (plateValue[0] < 0 || Char.IsDigit(plateValue[0]) == false) {
+	        /*if (plateValue[0] < 0 || Char.IsDigit(plateValue[0]) == false) {
 		        // Check Old (Loca-12-Kr-1234)
                 if (plateValue[2] < 0 || Char.IsDigit(plateValue[2]) == false) return false;
                 if (plateValue[3] < 0 || Char.IsDigit(plateValue[3]) == false) return false;
@@ -332,7 +334,7 @@ namespace GBU_Server_DotNet
                 if (plateValue[4] < 0 || Char.IsDigit(plateValue[4]) == false) return false;
                 if (plateValue[5] < 0 || Char.IsDigit(plateValue[5]) == false) return false;
                 if (plateValue[6] < 0 || Char.IsDigit(plateValue[6]) == false) return false;
-	        }
+	        }*/
 
 	        return true;
         }
