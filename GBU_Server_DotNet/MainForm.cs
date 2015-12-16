@@ -39,6 +39,11 @@ namespace GBU_Server_DotNet
 
         private Database dbManager = new Database();
 
+        public int cropX = 100;
+        public int cropY = 270;
+        public int cropWidth = 800;
+        public int cropHeight = 450;
+
         public MainForm()
         {
             InitializeComponent();
@@ -113,7 +118,8 @@ namespace GBU_Server_DotNet
                         _plateListIdx++;
 
                         // id is auto-increment value in DB
-                        dbManager.InsertPlate(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot);
+                        //dbManager.InsertPlate(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot);
+                        dbManager.InsertPlateText(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot);
                     }
                 ));
             }
@@ -175,7 +181,7 @@ namespace GBU_Server_DotNet
                     {
                         if (anpr != null)
                         {
-                            bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1, 0, 270, 800, 450); // 108, 110, 800, 450);
+                            bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1, cropX, cropY, cropWidth, cropHeight); // 108, 110, 800, 450);
                             bmp = ResizeBitmap(bmp, 480, 270); // size of anpr input image
                             anpr.pushMedia(bmp, bmp.Width, bmp.Height);
                             bmp.Dispose();
@@ -234,13 +240,13 @@ namespace GBU_Server_DotNet
             anpr = new ANPR();
             anpr.camID = camera.camID;
 
-            //string path = camera.camURL;
-            string path = @"C:\NetDEVSDK\Record\netDev_07.ts";
+            string path = camera.camURL;
+            //string path = @"C:\NetDEVSDK\Record\netDev_07.ts";
             player = new MediaPlayer(".\\plugins");
 
             player.SetRenderWindow((int)this.panel1.Handle);
-            //player.PlayStream(path, 1920, 1080);
-            player.PlayFile(path);
+            player.PlayStream(path, 1920, 1080);
+            //player.PlayFile(path);
 
 #if TEST_PAINTEVENT
             panel1.Paint += panel1_Paint; // change to timer

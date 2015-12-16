@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace GBU_Server_DotNet
 {
@@ -22,6 +23,9 @@ namespace GBU_Server_DotNet
             public string plateStr;
             public Image snapshot;
         };
+
+        private List<PLATE_FOUND> _plateList = new List<PLATE_FOUND>();
+        private int _plateListIdx = 0;
 
         public SearchWindow()
         {
@@ -58,6 +62,16 @@ namespace GBU_Server_DotNet
                 string[] itemStr = { Convert.ToString(dr["camId"]), Convert.ToDateTime(dr["dateTime"]).ToString(), Convert.ToString(dr["plate"]) };
                 ListViewItem item = new ListViewItem(itemStr);
                 Search_listView1.Items.Add(item);
+
+                /*PLATE_FOUND plate = new PLATE_FOUND();
+                plate.cam = Convert.ToInt32(dr["camId"]);
+                plate.dateTime = Convert.ToDateTime(dr["dateTime"]);
+                plate.id = _plateListIdx;
+                plate.plateStr = Convert.ToString(dr["plate"]);
+                plate.snapshot = byteArrayToImage((byte[])dr["image"]);
+
+                _plateList.Add(plate);
+                _plateListIdx++;*/
             }
 
         }
@@ -65,6 +79,20 @@ namespace GBU_Server_DotNet
         private void search_textBox_search_TextChanged(object sender, EventArgs e)
         {
             // to be added...
+        }
+
+        private void Search_listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // to be added...
+            //int index = Search_listView1.FocusedItem.Index;
+            //pictureBox_searchImage.Image = _plateList[index].snapshot;
+        }
+
+        public Image byteArrayToImage(byte[] byteArrayIn)
+        {
+            MemoryStream ms = new MemoryStream(byteArrayIn);
+            Image returnImage = Image.FromStream(ms);
+            return returnImage;
         }
 
 

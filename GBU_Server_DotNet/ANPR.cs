@@ -14,7 +14,7 @@ namespace GBU_Server_DotNet
     static class Constants
     {
         public const int CANDIDATE_REMOVE_TIME = 60000; // ms
-        public const int CANDIDATE_COUNT_FOR_PASS = 3;
+        public const int CANDIDATE_COUNT_FOR_PASS = 20; // default is 3, for gas station stop is 20
         public const int MAX_IMAGE_BUFFER = 30;
     }
 
@@ -89,7 +89,7 @@ namespace GBU_Server_DotNet
             anpr.SetProperty("nchar_min", "8"); // "7"); // Default 8
             anpr.SetProperty("nchar_max", "9"); // Default 9
 
-            anpr.SetProperty("slope", "-22"); // "-5"); // Default -22
+            anpr.SetProperty("slope", "-4"); // "-5"); // Default -22
             anpr.SetProperty("slope_min", "-22"); //-20"); // Default -22
             anpr.SetProperty("slope_max", "34"); // "10"); // Default 34
 
@@ -97,7 +97,7 @@ namespace GBU_Server_DotNet
             anpr.SetProperty("slant_min", "-55"); // "-10"); // Default -55
             anpr.SetProperty("slant_max", "27"); // "10"); // Default 27
 
-            anpr.SetProperty("timeout", "100");
+            anpr.SetProperty("timeout", "500"); // default 100
         }
 
         public void ANPRRunThread()
@@ -318,7 +318,8 @@ namespace GBU_Server_DotNet
 
         bool isValidPlateString(string plateValue)
         {
-	        /*if (plateValue[0] < 0 || Char.IsDigit(plateValue[0]) == false) {
+	        if (plateValue.Length > 8 && (plateValue[0] < 0 || Char.IsDigit(plateValue[0]) == false)) 
+            {
 		        // Check Old (Loca-12-Kr-1234)
                 if (plateValue[2] < 0 || Char.IsDigit(plateValue[2]) == false) return false;
                 if (plateValue[3] < 0 || Char.IsDigit(plateValue[3]) == false) return false;
@@ -327,14 +328,29 @@ namespace GBU_Server_DotNet
                 if (plateValue[7] < 0 || Char.IsDigit(plateValue[7]) == false) return false;
                 if (plateValue[8] < 0 || Char.IsDigit(plateValue[8]) == false) return false;
 	        }
-	        else {
+	        else
+            {
 		        // 2006 yr. (12-Kr-1234)
+                if (plateValue.Length != 7) return false;
                 if (plateValue[1] < 0 || Char.IsDigit(plateValue[1]) == false) return false;
                 if (plateValue[3] < 0 || Char.IsDigit(plateValue[3]) == false) return false;
                 if (plateValue[4] < 0 || Char.IsDigit(plateValue[4]) == false) return false;
                 if (plateValue[5] < 0 || Char.IsDigit(plateValue[5]) == false) return false;
                 if (plateValue[6] < 0 || Char.IsDigit(plateValue[6]) == false) return false;
-	        }*/
+	        }
+
+            if (Char.IsDigit(plateValue[0]) == false)
+            {
+                // Check Old (Loca-12-Kr-1234) Local area
+                foreach (string areaName in KOREA_LOCALAREA_LIST)
+                {
+                    if (!plateValue.Contains(areaName))
+                    {
+                        // to do : add adjustment codes for local area
+                        return false;
+                    }
+                }
+            }
 
 	        return true;
         }

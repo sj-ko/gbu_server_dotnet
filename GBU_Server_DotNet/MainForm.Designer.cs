@@ -204,7 +204,6 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox anprResultThumbnail;
         private System.Windows.Forms.TextBox textBox_anpr;
         private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
@@ -213,6 +212,7 @@
         public System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
+        public System.Windows.Forms.Panel panel1;
     }
 }
 

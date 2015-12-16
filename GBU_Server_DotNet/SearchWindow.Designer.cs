@@ -33,6 +33,8 @@
             this.Search_listView1 = new System.Windows.Forms.ListView();
             this.Search_button_OK = new System.Windows.Forms.Button();
             this.Search_button_search = new System.Windows.Forms.Button();
+            this.pictureBox_searchImage = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_searchImage)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -59,6 +61,7 @@
             this.Search_listView1.Size = new System.Drawing.Size(525, 271);
             this.Search_listView1.TabIndex = 2;
             this.Search_listView1.UseCompatibleStateImageBehavior = false;
+            this.Search_listView1.SelectedIndexChanged += new System.EventHandler(this.Search_listView1_SelectedIndexChanged);
             // 
             // Search_button_OK
             // 
@@ -80,11 +83,20 @@
             this.Search_button_search.UseVisualStyleBackColor = true;
             this.Search_button_search.Click += new System.EventHandler(this.Search_button_search_Click);
             // 
+            // pictureBox_searchImage
+            // 
+            this.pictureBox_searchImage.Location = new System.Drawing.Point(562, 96);
+            this.pictureBox_searchImage.Name = "pictureBox_searchImage";
+            this.pictureBox_searchImage.Size = new System.Drawing.Size(357, 203);
+            this.pictureBox_searchImage.TabIndex = 5;
+            this.pictureBox_searchImage.TabStop = false;
+            // 
             // SearchWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(590, 408);
+            this.ClientSize = new System.Drawing.Size(922, 404);
+            this.Controls.Add(this.pictureBox_searchImage);
             this.Controls.Add(this.Search_button_search);
             this.Controls.Add(this.Search_button_OK);
             this.Controls.Add(this.Search_listView1);
@@ -96,6 +108,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Search Plate";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_searchImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -108,5 +121,6 @@
         private System.Windows.Forms.ListView Search_listView1;
         private System.Windows.Forms.Button Search_button_OK;
         private System.Windows.Forms.Button Search_button_search;
+        private System.Windows.Forms.PictureBox pictureBox_searchImage;
     }
 }

@@ -59,13 +59,13 @@ namespace GBU_Server_DotNet
         public Camera()
         {
             _camID = 0;
-            _camURL = "rtsp://admin:admin@192.168.0.62/media/video1";
+            _camURL = "rtsp://admin:admin@14.52.220.82/media/video1";
         }
 
         public Camera(int id)
         {
             _camID = id;
-            _camURL = "rtsp://admin:admin@192.168.0.62/media/video1";
+            _camURL = "rtsp://admin:admin@14.52.220.82/media/video1";
         }
 
         public Camera(int id, string url)

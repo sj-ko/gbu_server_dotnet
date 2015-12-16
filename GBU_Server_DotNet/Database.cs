@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Data;
+using System.IO;
 
 namespace GBU_Server_DotNet
 {
@@ -87,6 +88,35 @@ namespace GBU_Server_DotNet
                 Console.WriteLine(e.ToString() + "::" + e.StackTrace);
             }
             return 0;
+        }
+
+        public void InsertPlateText(int camid, DateTime datetime, string plate, Image image)
+        {
+            string filepath = @"C:\anprtest\anprresult.txt";
+
+            if (!File.Exists(filepath))
+                File.Create(filepath);
+
+            StreamWriter file = new StreamWriter(filepath, true);
+            file.WriteLine(camid + " " + datetime + " " + plate);
+            file.Flush();
+            file.Close();
+
+            image.Save(@"C:\anprtest\" + plate + ".jpg", ImageFormat.Jpeg);
+        }
+
+        public void InsertPlateHTML(int camid, DateTime datetime, string plate, Image image)
+        {
+            // to be added
+            //
+
+        }
+
+        public void InsertPlateXML(int camid, DateTime datetime, string plate, Image image)
+        {
+            // to be added
+            //
+
         }
 
 
