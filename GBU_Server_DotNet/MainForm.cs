@@ -25,6 +25,9 @@ namespace GBU_Server_DotNet
         private System.Threading.Timer timer;
         private AutoResetEvent timerEvent;
 
+        // for MJPEG
+        private MediaPlayer_MJPEG playerMjpeg;
+
         public struct PLATE_FOUND
         {
             public int id;
@@ -118,8 +121,8 @@ namespace GBU_Server_DotNet
                         _plateListIdx++;
 
                         // id is auto-increment value in DB
-                        //dbManager.InsertPlate(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot);
-                        dbManager.InsertPlateText(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot);
+                        dbManager.InsertPlate(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot);
+                        //dbManager.InsertPlateText(plate.cam, plate.dateTime, plate.plateStr, plate.snapshot); // file write test
                     }
                 ));
             }
@@ -138,6 +141,11 @@ namespace GBU_Server_DotNet
                 player.Stop();
             }
 
+            if (playerMjpeg != null)
+            {
+                playerMjpeg.Stop();
+            }
+
             timer.Change(Timeout.Infinite, Timeout.Infinite); // stop timer
             timer.Dispose();
             timer = null;
@@ -146,8 +154,8 @@ namespace GBU_Server_DotNet
             anpr.ANPRDetected -= anpr_ANPRDetected;
             anpr = null;
 
-            _plateListIdx = 0;
-            _plateList.Clear();
+            //_plateListIdx = 0;
+            //_plateList.Clear();
         }
 
 #if TEST_PAINTEVENT
@@ -173,7 +181,7 @@ namespace GBU_Server_DotNet
         private void MediaTimerCallBack(Object obj)
         {
             //Console.WriteLine("MediaTimerCallBack");
-            Bitmap bmp = new Bitmap(this.panel1.Width, this.panel1.Height);
+            
 
             if (this.panel1.InvokeRequired)
             {
@@ -181,8 +189,10 @@ namespace GBU_Server_DotNet
                     {
                         if (anpr != null)
                         {
+                            Bitmap bmp = new Bitmap(this.panel1.Width, this.panel1.Height);
+
                             bmp = (Bitmap)ImageCapture.DrawToImage(this.panel1, cropX, cropY, cropWidth, cropHeight); // 108, 110, 800, 450);
-                            bmp = ResizeBitmap(bmp, 480, 270); // size of anpr input image
+                            //bmp = ResizeBitmap(bmp, 480, 270); // size of anpr input image
                             anpr.pushMedia(bmp, bmp.Width, bmp.Height);
                             bmp.Dispose();
                         }
@@ -240,20 +250,20 @@ namespace GBU_Server_DotNet
             anpr = new ANPR();
             anpr.camID = camera.camID;
 
-            string path = camera.camURL;
-            //string path = @"C:\NetDEVSDK\Record\netDev_07.ts";
+            //string path = camera.camURL;
+            string path = @"C:\VideoTest\LPR\2016-02-17_14-45-00.avi";
             player = new MediaPlayer(".\\plugins");
 
             player.SetRenderWindow((int)this.panel1.Handle);
-            player.PlayStream(path, 1920, 1080);
-            //player.PlayFile(path);
+            //player.PlayStream(path, 1920, 1080);
+            player.PlayFile(path);
 
 #if TEST_PAINTEVENT
             panel1.Paint += panel1_Paint; // change to timer
 #else
             //
             timerEvent = new AutoResetEvent(true);
-            timer = new System.Threading.Timer(MediaTimerCallBack, null, 100, 100);
+            timer = new System.Threading.Timer(MediaTimerCallBack, null, 100, 33);
             anpr.ANPRRunThread();
             anpr.ANPRDetected += anpr_ANPRDetected;
 #endif

@@ -37,9 +37,20 @@
             this.Configure_croparea = new System.Windows.Forms.PictureBox();
             this.Configure_groupBox1 = new System.Windows.Forms.GroupBox();
             this.Configure_groupBox2 = new System.Windows.Forms.GroupBox();
-            this.Configure_checkBox_fullscreen = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.Configure_UpDown_CropX = new System.Windows.Forms.NumericUpDown();
+            this.Configure_UpDown_CropY = new System.Windows.Forms.NumericUpDown();
+            this.Configure_UpDown_CropWidth = new System.Windows.Forms.NumericUpDown();
+            this.Configure_UpDown_CropHeight = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.Configure_croparea)).BeginInit();
             this.Configure_groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropWidth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropHeight)).BeginInit();
             this.SuspendLayout();
             // 
             // Configure_button_OK
@@ -119,7 +130,14 @@
             // 
             // Configure_groupBox2
             // 
-            this.Configure_groupBox2.Controls.Add(this.Configure_checkBox_fullscreen);
+            this.Configure_groupBox2.Controls.Add(this.Configure_UpDown_CropHeight);
+            this.Configure_groupBox2.Controls.Add(this.Configure_UpDown_CropWidth);
+            this.Configure_groupBox2.Controls.Add(this.Configure_UpDown_CropY);
+            this.Configure_groupBox2.Controls.Add(this.Configure_UpDown_CropX);
+            this.Configure_groupBox2.Controls.Add(this.label6);
+            this.Configure_groupBox2.Controls.Add(this.label5);
+            this.Configure_groupBox2.Controls.Add(this.label4);
+            this.Configure_groupBox2.Controls.Add(this.label3);
             this.Configure_groupBox2.Location = new System.Drawing.Point(12, 149);
             this.Configure_groupBox2.Name = "Configure_groupBox2";
             this.Configure_groupBox2.Size = new System.Drawing.Size(525, 332);
@@ -127,16 +145,113 @@
             this.Configure_groupBox2.TabStop = false;
             this.Configure_groupBox2.Text = "Crop area";
             // 
-            // Configure_checkBox_fullscreen
+            // label3
             // 
-            this.Configure_checkBox_fullscreen.AutoSize = true;
-            this.Configure_checkBox_fullscreen.Location = new System.Drawing.Point(19, 296);
-            this.Configure_checkBox_fullscreen.Name = "Configure_checkBox_fullscreen";
-            this.Configure_checkBox_fullscreen.Size = new System.Drawing.Size(105, 16);
-            this.Configure_checkBox_fullscreen.TabIndex = 0;
-            this.Configure_checkBox_fullscreen.Text = "Use fullscreen";
-            this.Configure_checkBox_fullscreen.UseVisualStyleBackColor = true;
-            this.Configure_checkBox_fullscreen.CheckedChanged += new System.EventHandler(this.Configure_checkBox_fullscreen_CheckedChanged);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(17, 304);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 12);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "CropX";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(131, 304);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(40, 12);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "CropY";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(251, 304);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(62, 12);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "CropWidth";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(388, 304);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(67, 12);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "CropHeight";
+            // 
+            // Configure_UpDown_CropX
+            // 
+            this.Configure_UpDown_CropX.Location = new System.Drawing.Point(59, 302);
+            this.Configure_UpDown_CropX.Maximum = new decimal(new int[] {
+            480,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropX.Name = "Configure_UpDown_CropX";
+            this.Configure_UpDown_CropX.Size = new System.Drawing.Size(55, 21);
+            this.Configure_UpDown_CropX.TabIndex = 13;
+            this.Configure_UpDown_CropX.ValueChanged += new System.EventHandler(this.Configure_UpDown_CropX_ValueChanged);
+            // 
+            // Configure_UpDown_CropY
+            // 
+            this.Configure_UpDown_CropY.Location = new System.Drawing.Point(173, 302);
+            this.Configure_UpDown_CropY.Maximum = new decimal(new int[] {
+            270,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropY.Name = "Configure_UpDown_CropY";
+            this.Configure_UpDown_CropY.Size = new System.Drawing.Size(57, 21);
+            this.Configure_UpDown_CropY.TabIndex = 14;
+            this.Configure_UpDown_CropY.ValueChanged += new System.EventHandler(this.Configure_UpDown_CropY_ValueChanged);
+            // 
+            // Configure_UpDown_CropWidth
+            // 
+            this.Configure_UpDown_CropWidth.Location = new System.Drawing.Point(315, 302);
+            this.Configure_UpDown_CropWidth.Maximum = new decimal(new int[] {
+            480,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropWidth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropWidth.Name = "Configure_UpDown_CropWidth";
+            this.Configure_UpDown_CropWidth.Size = new System.Drawing.Size(57, 21);
+            this.Configure_UpDown_CropWidth.TabIndex = 15;
+            this.Configure_UpDown_CropWidth.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropWidth.ValueChanged += new System.EventHandler(this.Configure_UpDown_CropWidth_ValueChanged);
+            // 
+            // Configure_UpDown_CropHeight
+            // 
+            this.Configure_UpDown_CropHeight.Location = new System.Drawing.Point(461, 302);
+            this.Configure_UpDown_CropHeight.Maximum = new decimal(new int[] {
+            270,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropHeight.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropHeight.Name = "Configure_UpDown_CropHeight";
+            this.Configure_UpDown_CropHeight.Size = new System.Drawing.Size(57, 21);
+            this.Configure_UpDown_CropHeight.TabIndex = 16;
+            this.Configure_UpDown_CropHeight.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.Configure_UpDown_CropHeight.ValueChanged += new System.EventHandler(this.Configure_UpDown_CropHeight_ValueChanged);
             // 
             // ConfigureWindow
             // 
@@ -161,6 +276,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.Configure_croparea)).EndInit();
             this.Configure_groupBox2.ResumeLayout(false);
             this.Configure_groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropWidth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Configure_UpDown_CropHeight)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -177,6 +296,13 @@
         private System.Windows.Forms.PictureBox Configure_croparea;
         private System.Windows.Forms.GroupBox Configure_groupBox1;
         private System.Windows.Forms.GroupBox Configure_groupBox2;
-        private System.Windows.Forms.CheckBox Configure_checkBox_fullscreen;
+        private System.Windows.Forms.NumericUpDown Configure_UpDown_CropHeight;
+        private System.Windows.Forms.NumericUpDown Configure_UpDown_CropWidth;
+        private System.Windows.Forms.NumericUpDown Configure_UpDown_CropY;
+        private System.Windows.Forms.NumericUpDown Configure_UpDown_CropX;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
     }
 }

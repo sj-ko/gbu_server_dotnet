@@ -31,6 +31,11 @@ namespace GBU_Server_DotNet
 
             _cropRect = new Rectangle((int)(form.cropX * downRatio), (int)(form.cropY * downRatio), (int)(form.cropWidth * downRatio), (int)(form.cropHeight * downRatio));
             Configure_croparea.Invalidate();
+
+            Configure_UpDown_CropX.Value = _cropRect.X;
+            Configure_UpDown_CropY.Value = _cropRect.Y;
+            Configure_UpDown_CropWidth.Value = _cropRect.Width;
+            Configure_UpDown_CropHeight.Value = _cropRect.Height;
         }
 
         private void Configure_button_OK_Click(object sender, EventArgs e)
@@ -67,7 +72,18 @@ namespace GBU_Server_DotNet
 
         private void Configure_croparea_MouseUp(object sender, MouseEventArgs e)
         {
+            if (_cropRect.X + _cropRect.Width > Configure_croparea.Width)
+                _cropRect.Width = Configure_croparea.Width - _cropRect.X;
 
+            if (_cropRect.Y + _cropRect.Height > Configure_croparea.Height)
+                _cropRect.Height = Configure_croparea.Height - _cropRect.Y;
+
+            Configure_UpDown_CropX.Value = _cropRect.X;
+            Configure_UpDown_CropY.Value = _cropRect.Y;
+            Configure_UpDown_CropWidth.Value = _cropRect.Width;
+            Configure_UpDown_CropHeight.Value = _cropRect.Height;
+
+            Configure_croparea.Invalidate();
         }
 
         private void Configure_croparea_MouseMove(object sender, MouseEventArgs e)
@@ -92,6 +108,30 @@ namespace GBU_Server_DotNet
         private void Configure_checkBox_fullscreen_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Configure_UpDown_CropX_ValueChanged(object sender, EventArgs e)
+        {
+            _cropRect.X = (int)Configure_UpDown_CropX.Value;
+            Configure_croparea.Invalidate();
+        }
+
+        private void Configure_UpDown_CropY_ValueChanged(object sender, EventArgs e)
+        {
+            _cropRect.Y = (int)Configure_UpDown_CropY.Value;
+            Configure_croparea.Invalidate();
+        }
+
+        private void Configure_UpDown_CropWidth_ValueChanged(object sender, EventArgs e)
+        {
+            _cropRect.Width = (int)Configure_UpDown_CropWidth.Value;
+            Configure_croparea.Invalidate();
+        }
+
+        private void Configure_UpDown_CropHeight_ValueChanged(object sender, EventArgs e)
+        {
+            _cropRect.Height = (int)Configure_UpDown_CropHeight.Value;
+            Configure_croparea.Invalidate();
         }
     }
 }

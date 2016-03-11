@@ -95,14 +95,16 @@ namespace GBU_Server_DotNet
             string filepath = @"C:\anprtest\anprresult.txt";
 
             if (!File.Exists(filepath))
-                File.Create(filepath);
+                File.Create(filepath).Close();
 
             StreamWriter file = new StreamWriter(filepath, true);
-            file.WriteLine(camid + " " + datetime + " " + plate);
+            file.WriteLine(camid + "," + plate + "," + datetime);
             file.Flush();
             file.Close();
 
-            image.Save(@"C:\anprtest\" + plate + ".jpg", ImageFormat.Jpeg);
+            string dtStr = String.Format("{0:yyyyMMdd_HHmmss}", datetime);
+
+            image.Save(@"C:\anprtest\" + plate + "_" + dtStr +".jpg", ImageFormat.Jpeg);
         }
 
         public void InsertPlateHTML(int camid, DateTime datetime, string plate, Image image)
